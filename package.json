@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "db:up": "docker compose up -d",
+    "db:migrate": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
-    "predev": "npm run prisma:generate",
+    "dev:setup": "npm run db:up && npm run db:migrate && npm run prisma:generate",
+    "predev": "npm run dev:setup",
     "dev": "nodemon src/server.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prestart": "npm run prisma:generate",
+    "prestart": "npm run db:migrate && npm run prisma:generate",
     "start": "node src/server.js"
   },
   "repository": {

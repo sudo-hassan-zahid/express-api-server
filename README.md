@@ -12,6 +12,25 @@ Install dependencies:
 npm install
 ```
 
+### Option 1
+
+Use the one-command local development flow:
+
+```bash
+npm run dev
+```
+
+This command:
+
+- starts the PostgreSQL container
+- applies checked-in Prisma migrations
+- regenerates the Prisma client
+- starts the app with nodemon
+
+### OR
+
+Run the setup steps manually:
+
 Start the PostgreSQL container:
 
 ```bash
@@ -20,16 +39,22 @@ docker compose up -d
 
 Database will be available on `PORT 5500`.
 
-Create and apply the initial Prisma migration:
+Apply existing Prisma migrations:
 
 ```bash
-npx prisma migrate dev --name init
+npm run db:migrate
 ```
 
 Regenerate the Prisma client manually if needed:
 
 ```bash
 npm run prisma:generate
+```
+
+If you need to create a new migration from schema changes:
+
+```bash
+npx prisma migrate dev --name your_migration_name
 ```
 
 Start the app in development mode:
@@ -48,7 +73,9 @@ The server runs on `PORT 5000`.
 
 ## Notes
 
-`npm run dev` and `npm start` both run Prisma client generation automatically before starting the server.
+`npm run dev` starts Docker, applies checked-in migrations, and regenerates the Prisma client before starting the server.
+
+`npm start` applies checked-in migrations and regenerates the Prisma client before starting.
 
 The app expects a `.env` file with:
 
