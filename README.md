@@ -4,25 +4,69 @@
 
 I'm working on this project to explore the Node/Express
 
-## Setup 
+## Commands
 
-1. Spin up the PostgreSQL container:
-
-```bash
- docker compose up -d
-```
-
-Database will be available on `PORT 5500`
-
-2. Set up:
+Install dependencies:
 
 ```bash
- npx prisma migrate dev --name init
- npx prisma generate
+npm install
 ```
 
-3. Run server:
+Start the PostgreSQL container:
+
 ```bash
- npm run dev
+docker compose up -d
 ```
-Server will run on `PORT 5000`
+
+Database will be available on `PORT 5500`.
+
+Create and apply the initial Prisma migration:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+Regenerate the Prisma client manually if needed:
+
+```bash
+npm run prisma:generate
+```
+
+Start the app in development mode:
+
+```bash
+npm run dev
+```
+
+Start the app without nodemon:
+
+```bash
+npm start
+```
+
+The server runs on `PORT 5000`.
+
+## Notes
+
+`npm run dev` and `npm start` both run Prisma client generation automatically before starting the server.
+
+The app expects a `.env` file with:
+
+```env
+PORT=5000
+DATABASE_URL="postgresql://postgres:postgres@localhost:5500/express_api_db"
+```
+
+## Formatting
+
+Format the project with:
+
+```bash
+npm run format
+```
+
+Check formatting without changing files:
+
+```bash
+npm run format:check
+```
