@@ -7,7 +7,7 @@
     "db:up": "docker compose up -d",
     "db:migrate": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
-    "dev:setup": "npm run db:up && npm run db:migrate && npm run prisma:generate",
+    "dev:setup": "npm run db:migrate && npm run prisma:generate",
     "predev": "npm run dev:setup",
     "dev": "nodemon src/server.js",
     "format": "prettier --write .",

@@ -13,8 +13,12 @@ npm install
 ```
 
 ### Option 1
+Spin up DB container using:
+```bash
+docker compose up -d
+```
 
-Use the one-command local development flow:
+And then use the one-command local development flow:
 
 ```bash
 npm run dev
@@ -22,7 +26,6 @@ npm run dev
 
 This command:
 
-- starts the PostgreSQL container
 - applies checked-in Prisma migrations
 - regenerates the Prisma client
 - starts the app with nodemon
