@@ -12,13 +12,17 @@ I'm working on this project to explore the Node/Express
  docker compose up -d
 ```
 
-2. Run Prisma Migrations:
+Database will be available on `PORT 5500`
+
+2. Set up:
 
 ```bash
  npx prisma migrate dev --name init
+ npx prisma generate
 ```
 
 3. Run server:
 ```bash
  npm run dev
 ```
+Server will run on `PORT 5000`
