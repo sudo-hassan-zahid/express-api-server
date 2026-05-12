@@ -18,4 +18,8 @@
     "url": "https://github.com/sudo-hassan-zahid/express-api-server/issues"
   },
   "homepage": "https://github.com/sudo-hassan-zahid/express-api-server#readme",
- 
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}
