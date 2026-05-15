@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: express_api_postgres
+    container_name: dev_express_server_db
     ports:
       - '5500:5432'
     environment:
@@ -9,7 +9,12 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: express_api_db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - dev_express_server_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d express_api_db']
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  postgres_data:
+  dev_express_server_postgres_data:

@@ -53,7 +53,11 @@
       },
       "RegisterRequest": {
         "type": "object",
-        "required": ["name", "email", "password"],
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -97,7 +101,10 @@
       },
       "LoginRequest": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
           "email": {
             "type": "string",
@@ -158,7 +165,9 @@
       "get": {
         "summary": "Check server health",
         "description": "Returns a simple status response to confirm the API process is running.",
-        "tags": ["Health"],
+        "tags": [
+          "Health"
+        ],
         "responses": {
           "200": {
             "description": "Server is healthy.",
@@ -177,7 +186,9 @@
       "get": {
         "summary": "Check database health",
         "description": "Runs a lightweight database query to verify PostgreSQL connectivity.",
-        "tags": ["Health"],
+        "tags": [
+          "Health"
+        ],
         "responses": {
           "200": {
             "description": "Database connection is healthy.",
@@ -206,7 +217,9 @@
       "post": {
         "summary": "Register a user",
         "description": "Creates a new user account with a hashed password.",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -255,7 +268,9 @@
       "post": {
         "summary": "Login a user",
         "description": "Authenticates credentials and returns a JWT with basic user details.",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "requestBody": {
           "required": true,
           "content": {

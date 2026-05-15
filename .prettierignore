@@ -4,3 +4,4 @@ coverage
 .git
 package-lock.json
 src/generated/prisma
+docs/swagger.json

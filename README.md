@@ -4,7 +4,7 @@
 
 I'm working on this project to explore the Node/Express
 
-## Commands
+## Local Development
 
 Install dependencies:
 
@@ -12,15 +12,9 @@ Install dependencies:
 npm install
 ```
 
-### Option 1
+The local development flow runs only PostgreSQL in Docker. The Express app runs on your machine with nodemon.
 
-Spin up DB container using:
-
-```bash
-docker compose up -d
-```
-
-And then use the one-command local development flow:
+Start the dev flow:
 
 ```bash
 npm run dev
@@ -28,18 +22,16 @@ npm run dev
 
 This command:
 
+- starts the dev PostgreSQL container named `dev_express_server_db`
 - applies checked-in Prisma migrations
 - regenerates the Prisma client
+- generates the latest Swagger JSON at `docs/swagger.json`
 - starts the app with nodemon
 
-### OR
-
-Run the setup steps manually:
-
-Start the PostgreSQL container:
+If you only want to start the dev database:
 
 ```bash
-docker compose up -d
+npm run db:up
 ```
 
 Database will be available on `PORT 5500`.
@@ -76,6 +68,29 @@ npm start
 
 The server runs on `PORT 5000`.
 
+## Production Docker
+
+The production-style Docker flow builds the Express app into a container named `express_server` and runs PostgreSQL in a separate container named `express_server_db`.
+
+Build and start the full stack:
+
+```bash
+docker compose -f docker-compose.prod.yml up --build
+```
+
+The app container startup command:
+
+- applies checked-in Prisma migrations
+- regenerates the Prisma client
+- generates the latest Swagger JSON
+- starts the Node app
+
+Stop the production stack:
+
+```bash
+docker compose -f docker-compose.prod.yml down
+```
+
 ## API Docs
 
 Swagger UI is available after the server starts:
@@ -100,9 +115,9 @@ This writes `docs/swagger.json`. The `npm run dev` command also regenerates this
 
 ## Notes
 
-`npm run dev` starts Docker, applies checked-in migrations, and regenerates the Prisma client before starting the server.
+`npm run dev` starts the dev DB container, applies checked-in migrations, regenerates the Prisma client, generates Swagger docs, and starts the server with nodemon.
 
-`npm start` applies checked-in migrations and regenerates the Prisma client before starting.
+`npm start` applies checked-in migrations, regenerates the Prisma client, generates Swagger docs, and starts the server.
 
 The app expects a `.env` file with:
 
