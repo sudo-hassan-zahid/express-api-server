@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/prisma.js';
@@ -39,7 +39,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: Request, res: Response): Promise<any> => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
@@ -103,7 +103,7 @@ router.post('/register', async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
 
@@ -134,14 +134,15 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    const secret = process.env.JWT_SECRET || 'fallback_secret';
     const token = jwt.sign(
       {
         id: user.id,
         email: user.email,
       },
-      process.env.JWT_SECRET,
+      secret,
       {
-        expiresIn: process.env.JWT_EXPIRES_IN || '1d',
+        expiresIn: (process.env.JWT_EXPIRES_IN || '1d') as any,
       }
     );
 
@@ -157,7 +158,7 @@ router.post('/login', async (req, res) => {
         },
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
       status: 'ERROR',
       message: 'Login failed',

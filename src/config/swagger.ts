@@ -158,7 +158,7 @@ const createSwaggerSpec = () =>
         },
       },
     },
-    apis: ['./src/server.js', './src/routes/*.js'],
+    apis: ['./src/server.ts', './src/routes/*.ts'],
   });
 
 export default createSwaggerSpec;

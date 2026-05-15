@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import prisma from './config/prisma.js';
@@ -9,9 +9,11 @@ dotenv.config();
 
 const app = express();
 const swaggerSpec = createSwaggerSpec();
+
 app.use(express.json());
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.get('/swagger.json', (req, res) => {
+
+app.get('/swagger.json', (req: Request, res: Response) => {
   res.json(swaggerSpec);
 });
 
@@ -24,8 +26,8 @@ app.listen(PORT, () => {
 // JSON response formatting
 app.set('json spaces', 2);
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get('/', (req: Request, res: Response) => {
+  res.send('Welcome to the API! Visit /swagger for API documentation.');
 });
 
 /**
@@ -44,7 +46,7 @@ app.get('/', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/HealthResponse'
  */
-app.get('/health/server', (req, res) => {
+app.get('/health/server', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'OK',
     message: 'Server is healthy',
@@ -74,7 +76,7 @@ app.get('/health/server', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-app.get('/health/db', async (req, res) => {
+app.get('/health/db', async (req: Request, res: Response) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
 
@@ -83,7 +85,7 @@ app.get('/health/db', async (req, res) => {
       message: 'Database connection is healthy',
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: 'ERROR',
       message: 'Database connection failed',
