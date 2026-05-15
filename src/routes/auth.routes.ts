@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt, { type SignOptions } from 'jsonwebtoken';
+import { signAuthToken } from '../config/jwt.js';
 import prisma from '../config/prisma.js';
 
 const router = express.Router();
@@ -18,28 +18,8 @@ type LoginBody = {
 
 type AuthRequest<TBody> = Request<Record<string, never>, unknown, TBody>;
 
-type JwtConfig = {
-  secret: string;
-  expiresIn: SignOptions['expiresIn'];
-};
-
 const isNonEmptyString = (value: unknown): value is string => {
   return typeof value === 'string' && value.trim().length > 0;
-};
-
-const getJwtConfig = (): JwtConfig => {
-  if (!isNonEmptyString(process.env.JWT_SECRET)) {
-    throw new Error('JWT_SECRET must be configured');
-  }
-
-  const expiresIn = (isNonEmptyString(process.env.JWT_EXPIRES_IN)
-    ? process.env.JWT_EXPIRES_IN
-    : '1d') as SignOptions['expiresIn'];
-
-  return {
-    secret: process.env.JWT_SECRET,
-    expiresIn,
-  };
 };
 
 /**
@@ -168,17 +148,10 @@ router.post('/login', async (req: AuthRequest<LoginBody>, res: Response) => {
       });
     }
 
-    const jwtConfig = getJwtConfig();
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-      },
-      jwtConfig.secret,
-      {
-        expiresIn: jwtConfig.expiresIn,
-      }
-    );
+    const token = signAuthToken({
+      id: user.id,
+      email: user.email,
+    });
 
     return res.status(200).json({
       message: 'Login successful',
