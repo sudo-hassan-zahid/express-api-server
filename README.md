@@ -13,7 +13,9 @@ npm install
 ```
 
 ### Option 1
+
 Spin up DB container using:
+
 ```bash
 docker compose up -d
 ```
@@ -73,6 +75,28 @@ npm start
 ```
 
 The server runs on `PORT 5000`.
+
+## API Docs
+
+Swagger UI is available after the server starts:
+
+```text
+http://localhost:5000/api-docs
+```
+
+The raw OpenAPI JSON is available at:
+
+```text
+http://localhost:5000/api-docs.json
+```
+
+Generate the latest OpenAPI JSON file:
+
+```bash
+npm run swagger:generate
+```
+
+This writes `docs/swagger.json`. The `npm run dev` command also regenerates this file before starting the server.
 
 ## Notes
 

@@ -7,9 +7,10 @@
     "db:up": "docker compose up -d",
     "db:migrate": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
+    "swagger:generate": "node scripts/generate-swagger.js",
     "dev:setup": "npm run db:migrate && npm run prisma:generate",
     "predev": "npm run dev:setup",
-    "dev": "nodemon src/server.js",
+    "dev": "npm run swagger:generate && nodemon src/server.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prestart": "npm run db:migrate && npm run prisma:generate",
@@ -35,7 +36,9 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0",
-    "prisma": "^6.19.3"
+    "prisma": "^6.19.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
