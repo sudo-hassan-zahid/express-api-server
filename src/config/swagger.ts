@@ -24,10 +24,6 @@ const createSwaggerSpec = () =>
           ErrorResponse: {
             type: 'object',
             properties: {
-              status: {
-                type: 'string',
-                example: 'ERROR',
-              },
               message: {
                 type: 'string',
                 example: 'Something went wrong',
@@ -35,6 +31,10 @@ const createSwaggerSpec = () =>
               error: {
                 type: 'string',
                 example: 'Detailed error message',
+              },
+              requestId: {
+                type: 'string',
+                example: 'a1b2c3d4',
               },
             },
           },
@@ -118,10 +118,6 @@ const createSwaggerSpec = () =>
           LoginResponse: {
             type: 'object',
             properties: {
-              status: {
-                type: 'string',
-                example: 'OK',
-              },
               message: {
                 type: 'string',
                 example: 'Login successful',

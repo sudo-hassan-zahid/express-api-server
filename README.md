@@ -2,7 +2,7 @@
 
 ## Overview
 
-I'm working on this project to explore the Node/Express
+Small Express + TypeScript API with Prisma, PostgreSQL, JWT auth, request logging, and Swagger docs.
 
 ## Commands
 
@@ -30,7 +30,8 @@ This command:
 
 - pushes Prisma schema changes to the local database
 - regenerates the Prisma client
-- starts the app with nodemon
+- regenerates `docs/swagger.json`
+- starts the app with `tsx watch`
 
 ### OR
 
@@ -74,7 +75,7 @@ Start the app in development mode:
 npm run dev
 ```
 
-Start the app without nodemon:
+Build and start the production server:
 
 ```bash
 npm start
@@ -119,9 +120,8 @@ LOG_LEVEL=debug
 LOG_DIR=logs
 LOG_TO_FILE=true
 LOG_COLORS=true
-ACCESS_TOKEN_EXPIRATION="1h"
-REFRESH_TOKEN_EXPIRATION="7d"
 JWT_SECRET="replace-with-a-secure-secret"
+JWT_EXPIRES_IN="1d"
 ```
 
 Logging notes:

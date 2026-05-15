@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { type SignOptions } from 'jsonwebtoken';
 import prisma from '../config/prisma.js';
 
 const router = express.Router();
@@ -18,8 +18,28 @@ type LoginBody = {
 
 type AuthRequest<TBody> = Request<Record<string, never>, unknown, TBody>;
 
+type JwtConfig = {
+  secret: string;
+  expiresIn: SignOptions['expiresIn'];
+};
+
 const isNonEmptyString = (value: unknown): value is string => {
   return typeof value === 'string' && value.trim().length > 0;
+};
+
+const getJwtConfig = (): JwtConfig => {
+  if (!isNonEmptyString(process.env.JWT_SECRET)) {
+    throw new Error('JWT_SECRET must be configured');
+  }
+
+  const expiresIn = (isNonEmptyString(process.env.JWT_EXPIRES_IN)
+    ? process.env.JWT_EXPIRES_IN
+    : '1d') as SignOptions['expiresIn'];
+
+  return {
+    secret: process.env.JWT_SECRET,
+    expiresIn,
+  };
 };
 
 /**
@@ -56,7 +76,7 @@ const isNonEmptyString = (value: unknown): value is string => {
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/register', async (req: AuthRequest<RegisterBody>, res: Response): Promise<any> => {
+router.post('/register', async (req: AuthRequest<RegisterBody>, res: Response) => {
   const { name, email, password } = req.body;
 
   if (!isNonEmptyString(name) || !isNonEmptyString(email) || !isNonEmptyString(password)) {
@@ -120,7 +140,7 @@ router.post('/register', async (req: AuthRequest<RegisterBody>, res: Response): 
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/login', async (req: AuthRequest<LoginBody>, res: Response): Promise<any> => {
+router.post('/login', async (req: AuthRequest<LoginBody>, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -148,15 +168,15 @@ router.post('/login', async (req: AuthRequest<LoginBody>, res: Response): Promis
       });
     }
 
-    const secret = process.env.JWT_SECRET || 'fallback_secret';
+    const jwtConfig = getJwtConfig();
     const token = jwt.sign(
       {
         id: user.id,
         email: user.email,
       },
-      secret,
+      jwtConfig.secret,
       {
-        expiresIn: (process.env.JWT_EXPIRES_IN || '1d') as any,
+        expiresIn: jwtConfig.expiresIn,
       }
     );
 
@@ -171,10 +191,10 @@ router.post('/login', async (req: AuthRequest<LoginBody>, res: Response): Promis
         },
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.status(500).json({
       message: 'Login failed',
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 });
