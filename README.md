@@ -81,13 +81,13 @@ The server runs on `PORT 5000`.
 Swagger UI is available after the server starts:
 
 ```text
-http://localhost:5000/api-docs
+/swagger
 ```
 
 The raw OpenAPI JSON is available at:
 
 ```text
-http://localhost:5000/api-docs.json
+/swagger.json
 ```
 
 Generate the latest OpenAPI JSON file:

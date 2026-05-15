@@ -10,8 +10,8 @@ dotenv.config();
 const app = express();
 const swaggerSpec = createSwaggerSpec();
 app.use(express.json());
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.get('/api-docs.json', (req, res) => {
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/swagger.json', (req, res) => {
   res.json(swaggerSpec);
 });
 

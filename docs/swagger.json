@@ -5,12 +5,6 @@
     "version": "1.0.0",
     "description": "Brief API documentation for health checks and authentication endpoints."
   },
-  "servers": [
-    {
-      "url": "http://localhost:5000",
-      "description": "Local server"
-    }
-  ],
   "tags": [
     {
       "name": "Health",

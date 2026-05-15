@@ -9,12 +9,6 @@ const createSwaggerSpec = () =>
         version: '1.0.0',
         description: 'Brief API documentation for health checks and authentication endpoints.',
       },
-      servers: [
-        {
-          url: process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 5000}`,
-          description: 'Local server',
-        },
-      ],
       tags: [
         {
           name: 'Health',
