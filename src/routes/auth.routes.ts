@@ -109,7 +109,6 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
 
     if (!email || !password) {
       return res.status(400).json({
-        status: 'ERROR',
         message: 'Email and password are required',
       });
     }
@@ -120,7 +119,6 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
 
     if (!user) {
       return res.status(401).json({
-        status: 'ERROR',
         message: 'Invalid credentials',
       });
     }
@@ -129,7 +127,6 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
 
     if (!isPasswordValid) {
       return res.status(401).json({
-        status: 'ERROR',
         message: 'Invalid credentials',
       });
     }
@@ -147,7 +144,6 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
     );
 
     return res.status(200).json({
-      status: 'OK',
       message: 'Login successful',
       data: {
         token,
@@ -160,7 +156,6 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
     });
   } catch (error: any) {
     return res.status(500).json({
-      status: 'ERROR',
       message: 'Login failed',
       error: error.message,
     });
