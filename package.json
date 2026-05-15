@@ -6,9 +6,10 @@
   "scripts": {
     "db:up": "docker compose up -d",
     "db:migrate": "prisma migrate deploy",
+    "db:push": "prisma db push",
     "prisma:generate": "prisma generate",
     "swagger:generate": "tsx scripts/generate-swagger.ts",
-    "dev:setup": "npm run db:migrate && npm run prisma:generate",
+    "dev:setup": "npm run db:push && npm run prisma:generate",
     "predev": "npm run dev:setup",
     "dev": "npm run swagger:generate && tsx watch src/server.ts",
     "build": "tsc",

@@ -28,7 +28,7 @@ npm run dev
 
 This command:
 
-- applies checked-in Prisma migrations
+- pushes Prisma schema changes to the local database
 - regenerates the Prisma client
 - starts the app with nodemon
 
@@ -48,6 +48,12 @@ Apply existing Prisma migrations:
 
 ```bash
 npm run db:migrate
+```
+
+Push the current Prisma schema directly in development:
+
+```bash
+npm run db:push
 ```
 
 Regenerate the Prisma client manually if needed:
@@ -100,7 +106,7 @@ This writes `docs/swagger.json`. The `npm run dev` command also regenerates this
 
 ## Notes
 
-`npm run dev` starts Docker, applies checked-in migrations, and regenerates the Prisma client before starting the server.
+`npm run dev` pushes the current Prisma schema with `prisma db push`, regenerates the Prisma client, and starts the server.
 
 `npm start` applies checked-in migrations and regenerates the Prisma client before starting.
 
