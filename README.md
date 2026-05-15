@@ -109,7 +109,21 @@ The app expects a `.env` file with:
 ```env
 PORT=5000
 DATABASE_URL="postgresql://postgres:postgres@localhost:5500/express_api_db"
+LOG_LEVEL=debug
+LOG_DIR=logs
+LOG_TO_FILE=true
+LOG_COLORS=true
+ACCESS_TOKEN_EXPIRATION="1h"
+REFRESH_TOKEN_EXPIRATION="7d"
+JWT_SECRET="replace-with-a-secure-secret"
 ```
+
+Logging notes:
+
+- `LOG_LEVEL` can be `debug`, `info`, `warn`, or `error`.
+- `LOG_TO_FILE=false` disables writing to `logs/app.log` and `logs/error.log`.
+- `LOG_COLORS=false` disables colored terminal logs. `LOG_COLORS=true` forces colors.
+- `NO_COLOR=1` also disables colors.
 
 ## Formatting
 

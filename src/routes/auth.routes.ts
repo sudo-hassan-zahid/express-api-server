@@ -5,6 +5,23 @@ import prisma from '../config/prisma.js';
 
 const router = express.Router();
 
+type RegisterBody = {
+  name?: unknown;
+  email?: unknown;
+  password?: unknown;
+};
+
+type LoginBody = {
+  email?: unknown;
+  password?: unknown;
+};
+
+type AuthRequest<TBody> = Request<Record<string, never>, unknown, TBody>;
+
+const isNonEmptyString = (value: unknown): value is string => {
+  return typeof value === 'string' && value.trim().length > 0;
+};
+
 /**
  * @openapi
  * /api/auth/register:
@@ -39,11 +56,11 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/register', async (req: Request, res: Response): Promise<any> => {
+router.post('/register', async (req: AuthRequest<RegisterBody>, res: Response): Promise<any> => {
   const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: 'Name, email and password are required' });
+  if (!isNonEmptyString(name) || !isNonEmptyString(email) || !isNonEmptyString(password)) {
+    return res.status(400).json({ message: 'Name, email and password must be valid strings' });
   }
 
   const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -103,13 +120,13 @@ router.post('/register', async (req: Request, res: Response): Promise<any> => {
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/login', async (req: Request, res: Response): Promise<any> => {
+router.post('/login', async (req: AuthRequest<LoginBody>, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (!isNonEmptyString(email) || !isNonEmptyString(password)) {
       return res.status(400).json({
-        message: 'Email and password are required',
+        message: 'Email and password must be valid strings',
       });
     }
 
