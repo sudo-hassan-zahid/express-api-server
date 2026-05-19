@@ -18,8 +18,19 @@ const createSwaggerSpec = () =>
           name: 'Auth',
           description: 'User registration and login.',
         },
+        {
+          name: 'Users',
+          description: 'Authenticated user management.',
+        },
       ],
       components: {
+        securitySchemes: {
+          cookieAuth: {
+            type: 'apiKey',
+            in: 'cookie',
+            name: 'access_token',
+          },
+        },
         schemas: {
           ErrorResponse: {
             type: 'object',
@@ -52,6 +63,71 @@ const createSwaggerSpec = () =>
               timestamp: {
                 type: 'string',
                 format: 'date-time',
+              },
+            },
+          },
+          User: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'integer',
+                example: 1,
+              },
+              name: {
+                type: 'string',
+                example: 'Hassan Zahid',
+              },
+              email: {
+                type: 'string',
+                format: 'email',
+                example: 'hassan@example.com',
+              },
+            },
+          },
+          UserResponse: {
+            type: 'object',
+            properties: {
+              message: {
+                type: 'string',
+                example: 'User retrieved successfully',
+              },
+              data: {
+                $ref: '#/components/schemas/User',
+              },
+            },
+          },
+          UserListResponse: {
+            type: 'object',
+            properties: {
+              message: {
+                type: 'string',
+                example: 'Users retrieved successfully',
+              },
+              data: {
+                type: 'array',
+                items: {
+                  $ref: '#/components/schemas/User',
+                },
+              },
+            },
+          },
+          UpdateUserRequest: {
+            type: 'object',
+            properties: {
+              name: {
+                type: 'string',
+                example: 'Hassan Zahid',
+              },
+              email: {
+                type: 'string',
+                format: 'email',
+                example: 'hassan@example.com',
+              },
+              password: {
+                type: 'string',
+                format: 'password',
+                minLength: 6,
+                example: 'new-strong-password',
               },
             },
           },
@@ -125,27 +201,8 @@ const createSwaggerSpec = () =>
               data: {
                 type: 'object',
                 properties: {
-                  token: {
-                    type: 'string',
-                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-                  },
                   user: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'integer',
-                        example: 1,
-                      },
-                      name: {
-                        type: 'string',
-                        example: 'Hassan Zahid',
-                      },
-                      email: {
-                        type: 'string',
-                        format: 'email',
-                        example: 'hassan@example.com',
-                      },
-                    },
+                    $ref: '#/components/schemas/User',
                   },
                 },
               },

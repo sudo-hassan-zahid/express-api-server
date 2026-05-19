@@ -2,7 +2,7 @@
 
 ## Overview
 
-Small Express + TypeScript API with Prisma, PostgreSQL, Redis user caching, JWT auth, request logging, and Swagger docs.
+Small Express + TypeScript API with Prisma, PostgreSQL, Redis user caching, cookie-based JWT auth, user management, request logging, and Swagger docs.
 
 ## Commands
 
@@ -104,6 +104,22 @@ npm run swagger:generate
 ```
 
 This writes `docs/swagger.json`. The `npm run dev` command also regenerates this file before starting the server.
+
+## Auth and Users
+
+Login stores the JWT in an `HttpOnly` `access_token` cookie. Protected routes read that cookie automatically:
+
+```text
+POST /api/auth/login
+POST /api/auth/logout
+GET /api/users
+GET /api/users/me
+GET /api/users/:id
+PATCH /api/users/:id
+DELETE /api/users/:id
+```
+
+`DELETE /api/users/:id` is a soft delete that sets `deleted_at` instead of removing the database row.
 
 ## Notes
 
