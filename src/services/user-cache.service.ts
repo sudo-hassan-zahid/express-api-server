@@ -1,6 +1,6 @@
 import { redisDelete, redisGetJson, redisSetJson } from '../config/redis.js';
 
-type CachedUser = {
+export type CachedUser = {
   id: number;
   name: string;
   email: string;

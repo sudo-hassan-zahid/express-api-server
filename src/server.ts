@@ -7,6 +7,7 @@ import { disconnectRedis, redisPing } from './config/redis.js';
 import createSwaggerSpec from './config/swagger.js';
 import { errorHandler, notFoundHandler, requestLogger } from './middleware/logging.middleware.js';
 import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
 import { logger } from './services/logger.service.js';
 
 const app = express();
@@ -134,6 +135,7 @@ app.get('/health/redis', async (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
