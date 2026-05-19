@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import cookieParser from 'cookie-parser';
 import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import prisma from './config/prisma.js';
@@ -15,6 +16,7 @@ const PORT = process.env.PORT || 5000;
 // JSON response formatting
 app.set('json spaces', 2);
 app.use(express.json());
+app.use(cookieParser());
 app.use(requestLogger);
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

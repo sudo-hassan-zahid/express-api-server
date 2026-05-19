@@ -1,0 +1,9 @@
+import type { JwtPayload } from '../config/jwt.js';
+
+declare global {
+  namespace Express {
+    interface Request {
+      auth?: JwtPayload;
+    }
+  }
+}
