@@ -2,7 +2,7 @@
 
 ## Overview
 
-Small Express + TypeScript API with Prisma, PostgreSQL, JWT auth, request logging, and Swagger docs.
+Small Express + TypeScript API with Prisma, PostgreSQL, Redis user caching, JWT auth, request logging, and Swagger docs.
 
 ## Commands
 
@@ -37,13 +37,13 @@ This command:
 
 Run the setup steps manually:
 
-Start the PostgreSQL container:
+Start the PostgreSQL and Redis containers:
 
 ```bash
 docker compose up -d
 ```
 
-Database will be available on `PORT 5500`.
+Database will be available on `PORT 5500`. Redis will be available on `PORT 6379`.
 
 Apply existing Prisma migrations:
 
@@ -122,6 +122,8 @@ LOG_TO_FILE=true
 LOG_COLORS=true
 JWT_SECRET="replace-with-a-secure-secret"
 JWT_EXPIRES_IN="1d"
+REDIS_URL="redis://localhost:6379"
+REDIS_USER_CACHE_TTL_SECONDS=300
 ```
 
 Logging notes:
@@ -130,6 +132,12 @@ Logging notes:
 - `LOG_TO_FILE=false` disables writing to `logs/app.log` and `logs/error.log`.
 - `LOG_COLORS=false` disables colored terminal logs. `LOG_COLORS=true` forces colors.
 - `NO_COLOR=1` also disables colors.
+
+Redis notes:
+
+- `/health/redis` checks cache connectivity with a Redis `PING`.
+- Auth login caches user records by email for `REDIS_USER_CACHE_TTL_SECONDS`.
+- If Redis is unavailable, the app logs a warning and falls back to PostgreSQL for auth lookups.
 
 ## Formatting
 

@@ -8,7 +8,7 @@
   "tags": [
     {
       "name": "Health",
-      "description": "Service and database health checks."
+      "description": "Service, database, and Redis health checks."
     },
     {
       "name": "Auth",
@@ -198,6 +198,37 @@
           },
           "500": {
             "description": "Database connection failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/redis": {
+      "get": {
+        "summary": "Check Redis health",
+        "description": "Runs a lightweight Redis PING command to verify cache connectivity.",
+        "tags": [
+          "Health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Redis connection is healthy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Redis connection failed.",
             "content": {
               "application/json": {
                 "schema": {
