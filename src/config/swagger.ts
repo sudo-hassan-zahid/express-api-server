@@ -12,7 +12,7 @@ const createSwaggerSpec = () =>
       tags: [
         {
           name: 'Health',
-          description: 'Service and database health checks.',
+          description: 'Service, database, and Redis health checks.',
         },
         {
           name: 'Auth',

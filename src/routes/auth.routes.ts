@@ -2,6 +2,11 @@ import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { signAuthToken } from '../config/jwt.js';
 import prisma from '../config/prisma.js';
+import {
+  cacheUser,
+  getCachedUserByEmail,
+  normalizeUserEmail,
+} from '../services/user-cache.service.js';
 
 const router = express.Router();
 
@@ -63,18 +68,22 @@ router.post('/register', async (req: AuthRequest<RegisterBody>, res: Response) =
     return res.status(400).json({ message: 'Name, email and password must be valid strings' });
   }
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
+  const normalizedEmail = normalizeUserEmail(email);
+  const existingUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (existingUser) {
     return res.status(409).json({ message: 'User already exists' });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
     data: {
-      name,
-      email,
+      name: name.trim(),
+      email: normalizedEmail,
       password: hashedPassword,
     },
   });
+
+  await cacheUser(user);
+
   res
     .status(201)
     .json({ message: 'User registered successfully', user: { id: user.id, email: user.email } });
@@ -130,9 +139,18 @@ router.post('/login', async (req: AuthRequest<LoginBody>, res: Response) => {
       });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    const normalizedEmail = normalizeUserEmail(email);
+    let user = await getCachedUserByEmail(normalizedEmail);
+
+    if (!user) {
+      user = await prisma.user.findUnique({
+        where: { email: normalizedEmail },
+      });
+
+      if (user) {
+        await cacheUser(user);
+      }
+    }
 
     if (!user) {
       return res.status(401).json({

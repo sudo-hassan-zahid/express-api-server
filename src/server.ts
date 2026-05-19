@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import prisma from './config/prisma.js';
+import { disconnectRedis, redisPing } from './config/redis.js';
 import createSwaggerSpec from './config/swagger.js';
 import { errorHandler, notFoundHandler, requestLogger } from './middleware/logging.middleware.js';
 import authRoutes from './routes/auth.routes.js';
@@ -90,9 +91,64 @@ app.get('/health/db', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @openapi
+ * /health/redis:
+ *   get:
+ *     summary: Check Redis health
+ *     description: Runs a lightweight Redis PING command to verify cache connectivity.
+ *     tags:
+ *       - Health
+ *     responses:
+ *       200:
+ *         description: Redis connection is healthy.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthResponse'
+ *       500:
+ *         description: Redis connection failed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+app.get('/health/redis', async (req: Request, res: Response) => {
+  const pong = await redisPing();
+
+  if (pong !== 'PONG') {
+    return res.status(500).json({
+      status: 'ERROR',
+      message: 'Redis connection failed',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  return res.status(200).json({
+    status: 'OK',
+    message: 'Redis connection is healthy',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+const shutdown = async (signal: string) => {
+  logger.info('Shutting down server', { signal });
+
+  await Promise.allSettled([prisma.$disconnect(), disconnectRedis()]);
+  process.exit(0);
+};
+
+process.on('SIGINT', () => {
+  void shutdown('SIGINT');
+});
+
+process.on('SIGTERM', () => {
+  void shutdown('SIGTERM');
+});
 
 process.on('unhandledRejection', (reason) => {
   logger.error('Unhandled promise rejection', { reason });
