@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import { signAuthToken } from '../config/jwt.js';
+import { clearAuthCookie, setAuthCookie, signAuthToken } from '../config/jwt.js';
 import prisma from '../config/prisma.js';
 import {
   cacheUser,
@@ -147,12 +147,12 @@ router.post('/login', async (req: AuthRequest<LoginBody>, res: Response) => {
         where: { email: normalizedEmail },
       });
 
-      if (user) {
+      if (user && !user.deleted_at) {
         await cacheUser(user);
       }
     }
 
-    if (!user) {
+    if (!user || user.deleted_at) {
       return res.status(401).json({
         message: 'Invalid credentials',
       });
@@ -171,10 +171,11 @@ router.post('/login', async (req: AuthRequest<LoginBody>, res: Response) => {
       email: user.email,
     });
 
+    setAuthCookie(res, token);
+
     return res.status(200).json({
       message: 'Login successful',
       data: {
-        token,
         user: {
           id: user.id,
           name: user.name,
@@ -188,6 +189,31 @@ router.post('/login', async (req: AuthRequest<LoginBody>, res: Response) => {
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
+});
+
+/**
+ * @openapi
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout the current user
+ *     description: Clears the authentication cookie for the current browser session.
+ *     tags:
+ *       - Auth
+ *     responses:
+ *       200:
+ *         description: Logout successful.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Logout successful
+ */
+router.post('/logout', (req: Request, res: Response) => {
+  clearAuthCookie(res);
+  return res.status(200).json({ message: 'Logout successful' });
 });
 
 export default router;
